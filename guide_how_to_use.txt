@@ -1,0 +1,78 @@
+======================================
+Selamat Datang di Dompetku! - Panduan Pengguna
+======================================
+
+Halo! Terima kasih telah menggunakan Dompetku. Aplikasi ini dirancang untuk membantu Anda melacak pemasukan dan pengeluaran dengan mudah.
+
+Ikuti panduan ini untuk memulai.
+
+---
+1. Memulai: Pendaftaran dan Login
+---
+- **Pendaftaran:** Jika Anda pengguna baru, klik tautan "Register here" pada halaman utama. Isi nama lengkap, email, username, dan password Anda, lalu klik tombol "Register". Setelah berhasil, Anda akan langsung masuk ke Dashboard.
+- **Login:** Jika Anda sudah punya akun, cukup masukkan username dan password Anda pada halaman utama, lalu klik "Login".
+
+---
+2. Mengenal Dashboard Anda
+---
+Setelah login, Anda akan melihat halaman Dashboard. Ini adalah ringkasan keuangan Anda:
+- **Total Pemasukan:** Jumlah total uang yang masuk dari semua transaksi pemasukan (misalnya: gaji, bonus).
+- **Total Pengeluaran:** Jumlah total uang yang telah Anda belanjakan.
+- **Saldo Saat Ini:** Ini adalah total saldo dari SEMUA akun Anda. Dihitung dari (Total Saldo Awal Semua Akun + Total Pemasukan - Total Pengeluaran).
+
+---
+3. Langkah Pertama (SANGAT PENTING): Membuat Akun Keuangan
+---
+Sebelum Anda bisa mencatat transaksi, Anda HARUS membuat setidaknya satu "Akun" terlebih dahulu.
+
+- **Apa itu "Akun"?** Anggap saja ini adalah tempat Anda menyimpan uang. Contoh: 'Dompet Tunai', 'Rekening BCA', 'GoPay', 'OVO'.
+- **Cara Membuat:**
+    1. Klik menu "Accounts" di navigasi atas.
+    2. Klik tombol biru "Add New Account".
+    3. Masukkan "Nama Akun" (misal: 'Dompet Utama').
+    4. Masukkan "Saldo Awal" (jumlah uang yang ada di akun tersebut saat ini).
+    5. Klik "Save Account".
+
+Ulangi langkah ini untuk semua tempat penyimpanan uang yang Anda miliki.
+
+---
+4. Mengelola Kategori
+---
+Kategori membantu Anda mengelompokkan transaksi. Aplikasi sudah menyediakan beberapa kategori bawaan.
+
+- **Apa itu "Kategori"?** Ini adalah label untuk setiap transaksi. Contoh: 'Makanan & Minuman', 'Transportasi', 'Gaji Bulanan'.
+- **Cara Mengelola:**
+    1. Klik menu "Categories" di navigasi atas.
+    2. Anda bisa melihat daftar kategori yang sudah ada.
+    3. Klik "Add New Category" untuk menambah kategori baru (misalnya: 'Hobi', 'Langganan Streaming').
+    4. Tentukan Tipe kategori tersebut: 'Income' (Pemasukan) atau 'Expense' (Pengeluaran).
+
+---
+5. Mencatat Transaksi (Pemasukan & Pengeluaran)
+---
+Ini adalah kegiatan utama yang akan Anda lakukan di aplikasi.
+
+1. Klik menu "Transactions" lalu klik tombol "Add New".
+2. **Account:** Pilih dari akun mana transaksi ini berasal (misal: dari 'Dompet Tunai').
+3. **Type:** Pilih 'Income' (jika Anda menerima uang) atau 'Expense' (jika Anda mengeluarkan uang).
+4. **Category:** Pilih kategori yang sesuai. Daftar kategori akan otomatis menyesuaikan berdasarkan 'Type' yang Anda pilih.
+5. **Amount:** Masukkan jumlah uang. Anda bisa mengetik '50000' dan titik pemisah ribuan akan ditambahkan secara otomatis.
+6. **Date:** Pilih tanggal transaksi.
+7. **Description:** Beri keterangan singkat (misal: 'Makan siang di warung').
+8. Klik "Save Transaction".
+
+Semua transaksi yang Anda catat akan muncul di halaman "Transactions".
+
+---
+6. Melihat Laporan Keuangan
+---
+Ingin tahu ke mana saja uang Anda pergi selama sebulan? Gunakan halaman Laporan.
+
+1. Klik menu "Reports".
+2. Secara default, laporan akan menampilkan data untuk bulan ini.
+3. Anda bisa memilih bulan lain menggunakan filter di bagian atas, lalu klik "View".
+4. **Grafik Donat:** Menunjukkan rincian pengeluaran Anda berdasarkan kategori. Anda bisa lihat kategori mana yang paling banyak memakan biaya.
+5. **Tabel Rincian:** Menampilkan semua transaksi yang terjadi pada bulan yang dipilih.
+
+======================================
+Semoga panduan ini bermanfaat! Selamat mengelola keuangan Anda.

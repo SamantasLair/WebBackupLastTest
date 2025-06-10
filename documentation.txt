@@ -1,0 +1,115 @@
+======================================
+Dompetku - Dokumentasi Teknis
+======================================
+
+## GAMBARAN UMUM PROYEK
+
+Dompetku adalah aplikasi web manajemen keuangan pribadi sederhana yang berbasis login per pengguna. Aplikasi ini dibuat menggunakan PHP native tanpa framework, dengan fokus pada kode prosedural yang jelas dan pemisahan struktur.
+
+- **Backend:** PHP Native (Gaya Prosedural)
+- **Database:** MySQL/MariaDB
+- **Frontend:** Bootstrap 5 untuk tata letak dan komponen.
+- **JavaScript:** Vanilla JavaScript untuk peningkatan sisi klien (dropdown dinamis, format input), dan Chart.js untuk visualisasi data.
+- **Keamanan:** Menggunakan PDO dengan prepared statements untuk mencegah SQL injection dan `password_hash()`/`password_verify()` untuk manajemen password yang aman.
+
+---
+## SKEMA DATABASE
+
+Database `finance_app` terdiri dari beberapa tabel inti:
+
+- `users`: Menyimpan kredensial pengguna. `password_hash` menggunakan algoritma PASSWORD_BCRYPT.
+- `accounts`: Merepresentasikan sumber keuangan (misalnya, rekening bank, dompet tunai). Setiap transaksi terhubung ke sebuah akun.
+- `categories`: Label yang ditentukan pengguna untuk transaksi (misalnya, 'Makanan', 'Gaji'). Dapat bertipe 'income' atau 'expense'. Sistem mendukung kategori default bersama dari pengguna admin (user_id = 1).
+- `transactions`: Tabel inti yang mencatat setiap peristiwa keuangan (pemasukan/pengeluaran). Menghubungkan pengguna, akun, dan kategori.
+- `budgets`: (Skema sudah ada tetapi belum diimplementasikan di antarmuka) Ditujukan untuk menetapkan batas pengeluaran bulanan per kategori.
+
+---
+## STRUKTUR DIREKTORI
+
+- `/assets`: Berisi semua file statis.
+  - `/css/style.css`: Semua aturan CSS kustom untuk tema dan tata letak.
+  - `/js/main.js`: Semua kode JavaScript kustom untuk interaktivitas sisi klien.
+- `/auth`: Menangani semua logika otentikasi.
+  - `login.php`, `register.php`, `logout.php`.
+- `/config`: Untuk konfigurasi aplikasi.
+  - `database.php`: Membangun koneksi database PDO.
+- `/image`: Menyimpan gambar yang diunggah pengguna, seperti latar belakang untuk halaman otentikasi.
+- `/includes`: Potongan kode PHP yang dapat digunakan kembali.
+  - `header.php`/`footer.php`: Template HTML untuk struktur halaman, termasuk link CDN untuk Bootstrap dan Chart.js.
+  - `auth_check.php`: File keamanan penting yang disertakan di bagian atas setiap halaman yang dilindungi untuk memastikan pengguna sudah login.
+- `/public`: Direktori root web tempat semua halaman yang diakses pengguna berada.
+
+---
+## DOKUMENTASI KODE PER FILE
+
+### config/database.php
+- **Tujuan:** Skrip koneksi database terpusat.
+- **Blok: Logika Koneksi**
+  - Mendefinisikan kredensial database (`$db_host`, `$db_user`, dll.).
+  - Membuat instance PDO baru dengan opsi spesifik untuk keamanan dan kemudahan:
+    - `PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION`: Melempar exceptions pada error SQL, memungkinkan penggunaan blok `try...catch`.
+    - `PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC`: Mengambil hasil sebagai array asosiatif.
+    - `PDO::ATTR_EMULATE_PREPARES => false`: Menonaktifkan emulasi prepared statements, memastikan prepared statements asli digunakan oleh driver database untuk keamanan yang lebih baik.
+
+### assets/css/style.css
+- **Tujuan:** Berisi semua styling kustom untuk menimpa Bootstrap dan menciptakan tema aplikasi.
+- **Blok: `auth-wrapper`, `auth-branding-panel`, `auth-form-panel`**
+  - Aturan-aturan ini membuat tata letak dua kolom untuk halaman login dan registrasi. Flexbox digunakan untuk mengelola tata letak. Panel branding menggunakan overlay `linear-gradient` di atas gambar latar belakang untuk memastikan keterbacaan teks sambil mempertahankan tema.
+- **Blok: `summary-card`**
+  - Mendefinisikan gaya untuk kartu utama di dashboard, termasuk gradien, `box-shadow` untuk efek "terangkat", dan transisi saat di-hover.
+  - Ikon besar di latar belakang diposisikan secara absolut di dalam kartu dan diberi opasitas rendah.
+
+### assets/js/main.js
+- **Tujuan:** Memberikan peningkatan pengalaman pengguna di sisi klien. Seluruh skrip dibungkus dalam listener `DOMContentLoaded` untuk memastikan DOM siap sebelum eksekusi.
+- **Blok: Logika Dropdown Kategori**
+  - Skrip ini memeriksa keberadaan `#transaction-form-container`.
+  - Ia mengambil daftar lengkap kategori, yang di-encode menjadi JSON ke dalam atribut `data-categories` di file PHP.
+  - Sebuah event listener pada dropdown 'Type' memicu fungsi `populateCategories`. Fungsi ini menyaring daftar kategori utama berdasarkan tipe yang dipilih ('income' atau 'expense') dan secara dinamis membangun ulang opsi dropdown 'Category'.
+- **Blok: Format Input Jumlah (Amount)**
+  - Menargetkan kolom input `#amount`.
+  - Sebuah event listener pada event `input` dieksekusi setiap kali ada ketikan.
+  - Logikanya menghapus semua karakter non-digit, mengubahnya menjadi integer, lalu memformatnya kembali menggunakan `toLocaleString('de-DE')` untuk menambahkan titik sebagai pemisah ribuan, memberikan umpan balik format instan kepada pengguna.
+
+### auth/register.php
+- **Tujuan:** Menangani pendaftaran pengguna baru.
+- **Blok: Penanganan Request POST**
+  - Saat form disubmit, skrip melakukan validasi dasar.
+  - Password di-hash secara aman menggunakan `password_hash()`.
+  - Setelah berhasil melakukan `INSERT` ke tabel `users`, pengguna langsung di-login-kan secara otomatis. Ini dicapai dengan:
+    1. Mendapatkan ID pengguna baru melalui `$pdo->lastInsertId()`.
+    2. Mengatur variabel `$_SESSION` (`user_id`, `username`, `full_name`).
+    3. Mengalihkan (redirect) pengguna langsung ke dashboard, memberikan pengalaman yang mulus.
+
+### public/index.php (Dashboard)
+- **Tujuan:** Halaman utama setelah login, menampilkan ringkasan keuangan.
+- **Blok: Pengambilan Data**
+  - Dua query sederhana yang terpisah dijalankan untuk kejelasan dan efisiensi.
+  - Query pertama menghitung jumlah total 'income' dan 'expense' dari tabel `transactions`.
+  - Query kedua menghitung jumlah `initial_balance` dari semua akun pengguna.
+- **Blok: Perhitungan Akhir**
+  - "Saldo Saat Ini" dihitung menggunakan logika yang benar: `Total Saldo Awal + Total Pemasukan Transaksi - Total Pengeluaran Transaksi`. Ini memberikan gambaran nyata dari total kekayaan bersih pengguna di semua akun.
+
+### public/accounts.php
+- **Tujuan:** Manajemen CRUD (Create, Read, Update, Delete) penuh untuk akun keuangan pengguna.
+- **Blok: Perhitungan Saldo Saat Ini (Tampilan Daftar)**
+  - Halaman ini memiliki query SQL paling kompleks di aplikasi ini.
+  - Ia melakukan `LEFT JOIN` dari tabel `accounts` ke sebuah subquery.
+  - Subquery tersebut melakukan pra-agregasi total pemasukan dan pengeluaran untuk setiap `account_id` dari tabel `transactions`.
+  - `COALESCE` digunakan untuk menangani akun yang belum memiliki transaksi, memastikan pemasukan/pengeluarannya dianggap 0, bukan `NULL`.
+  - Saldo akhir saat ini untuk setiap akun kemudian dihitung dan ditampilkan di PHP.
+
+### public/transactions.php
+- **Tujuan:** Manajemen CRUD penuh untuk transaksi.
+- **Blok: Pengecekan Prasyarat**
+  - Skrip pertama-tama memeriksa apakah pengguna telah membuat setidaknya satu akun. Jika tidak, ia menampilkan pesan error yang informatif dengan tautan ke halaman `accounts.php`, mencegah pengguna terjebak.
+- **Blok: Sanitasi Request POST**
+  - Saat menangani pengiriman form, kolom 'amount' disanitasi dengan `$amount = str_replace('.', '', $_POST['amount']);` untuk menghapus titik pemisah ribuan sebelum menyimpan nilai numerik ke database.
+
+### public/reports.php
+- **Tujuan:** Menyediakan laporan keuangan bulanan dengan visualisasi data.
+- **Blok: Pengambilan & Penyaringan Data**
+  - Mengambil bulan yang diinginkan dari `$_GET['month']`, dengan default bulan berjalan.
+  - Menjalankan dua query yang difilter berdasarkan bulan ini: satu untuk mendapatkan daftar transaksi terperinci untuk tabel, dan query agregat kedua yang menjumlahkan pengeluaran dengan `GROUP BY` nama kategori, khusus untuk grafik.
+- **Blok: Injeksi Data Grafik**
+  - Array PHP yang berisi label (nama kategori) dan nilai (jumlah total) untuk grafik di-encode secara aman ke format JSON menggunakan `json_encode()`.
+  - JSON ini kemudian dicetak ke dalam variabel JavaScript di dalam tag `<script>` di bagian bawah halaman. Skrip Chart.js kemudian menggunakan variabel-variabel ini untuk membangun dan me-render grafik donat.
