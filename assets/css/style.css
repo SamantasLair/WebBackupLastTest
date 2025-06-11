@@ -2,6 +2,25 @@
  * Custom Styles for Dompetku
  */
 
+/* --- Keyframe Animations --- */
+@keyframes pan-image {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes card-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
 /* --- General Body & Theme --- */
 body {
     background-color: #f8f9fa; 
@@ -17,18 +36,18 @@ body {
     display: flex;
     min-height: 100vh;
     width: 100%;
-    background-color: #f8f9fa;
 }
 
 .auth-branding-panel {
     flex: 1.5;
-    background-color: #c62828;
-    /* The user's image is used as the background, with a red overlay to maintain the theme */
+    background-color: #ff3434;
     background-image: 
         linear-gradient(45deg, rgba(198, 40, 40, 0.85), rgba(211, 47, 47, 0.85)),
         url('../image/dummy.jpg');
-    background-size: cover;
+    background-size: 150%;
     background-position: center center;
+    background-blend-mode: multiply;
+    animation: pan-image 40s ease-in-out infinite alternate;
     color: white;
     display: flex;
     flex-direction: column;
@@ -44,14 +63,14 @@ body {
     font-weight: 700;
     margin-bottom: 1rem;
     letter-spacing: 1px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .auth-branding-panel p {
     font-size: 1.25rem;
     font-weight: 300;
     max-width: 400px;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .auth-form-panel {
@@ -60,6 +79,8 @@ body {
     justify-content: center;
     align-items: center;
     padding: 40px;
+    background-color: #ffffff;
+    background-image: radial-gradient(circle at bottom, #f0f2f5 0%, #ffffff 40%);
 }
 
 .auth-card {
@@ -69,6 +90,13 @@ body {
     padding: 40px;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0,0,0,0.05);
+    animation: card-fade-in 0.7s ease-out forwards;
+}
+
+.auth-icon {
+    font-size: 2.5rem;
+    color: #c62828;
 }
 
 .auth-card h3 {
@@ -77,11 +105,31 @@ body {
     color: #333;
 }
 
-.auth-card .form-control {
+.input-group-with-icon {
+    position: relative;
+}
+
+.input-group-with-icon .fas {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #adb5bd;
+    transition: color 0.2s;
+    pointer-events: none; /* Make icon non-interactive */
+}
+
+.input-group-with-icon .form-control {
+    padding-left: 45px;
     border-radius: 8px;
-    padding: 12px 15px;
+    padding-top: 12px;
+    padding-bottom: 12px;
     border: 1px solid #ced4da;
     transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group-with-icon .form-control:focus + .fas {
+    color: #c62828;
 }
 
 .auth-card .form-control:focus {
@@ -95,12 +143,14 @@ body {
     border-radius: 8px;
     padding: 12px;
     font-weight: 500;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease-out;
 }
 
 .auth-card .btn-primary:hover {
     background-color: #b71c1c;
     border-color: #b71c1c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
 
