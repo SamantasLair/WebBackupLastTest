@@ -1,5 +1,5 @@
 <?php
-// Session buat template
+// Session buat template males ngetik ulang tinggal include awoakawok
 session_start();
 
 if (!isset($_SESSION['user_id'])) {

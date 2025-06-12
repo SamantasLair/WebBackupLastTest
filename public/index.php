@@ -7,7 +7,6 @@ include '../includes/header.php';
 
 $user_id = $_SESSION['user_id'];
 
-// Mengambil data ringkasan transaksi
 $stmt_transactions = $pdo->prepare("
     SELECT 
         COALESCE(SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END), 0) as total_income,
@@ -18,7 +17,6 @@ $stmt_transactions = $pdo->prepare("
 $stmt_transactions->execute([$user_id]);
 $summary_transactions = $stmt_transactions->fetch();
 
-// Mengambil data ringkasan saldo awal dari semua akun
 $stmt_accounts = $pdo->prepare("
     SELECT COALESCE(SUM(initial_balance), 0) as total_initial_balance 
     FROM accounts 
@@ -32,7 +30,6 @@ $total_income = $summary_transactions['total_income'];
 $total_expense = $summary_transactions['total_expense'];
 $total_initial_balance = $summary_accounts['total_initial_balance'];
 
-// Logika baru untuk saldo saat ini
 $current_balance = $total_initial_balance + $total_income - $total_expense;
 
 ?>

@@ -5,13 +5,12 @@ require '../config/database.php';
 $page_title = 'Categories';
 $user_id = $_SESSION['user_id'];
 
-// Default action is to list categories
+
 $action = $_GET['action'] ?? 'list';
 $category_id = $_GET['id'] ?? null;
 $error = '';
 $success = '';
 
-// Handle POST requests for adding/editing categories
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name']);
     $type = $_POST['type'];
@@ -29,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } elseif ($action == 'edit' && $category_id) {
             try {
-                // Verify the category belongs to the user before updating
                 $stmt = $pdo->prepare("UPDATE categories SET name = ?, type = ? WHERE id = ? AND user_id = ?");
                 $stmt->execute([$name, $type, $category_id, $user_id]);
                 $success = 'Category updated successfully!';
@@ -37,15 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = 'An error occurred while updating the category.';
             }
         }
-        // Redirect to the list view after a short delay to show the message
         header("Location: categories.php");
         exit();
     }
 }
 
-// Handle delete requests
 if ($action == 'delete' && $category_id) {
-    // Verify the category belongs to the user before deleting
     $stmt = $pdo->prepare("DELETE FROM categories WHERE id = ? AND user_id = ?");
     $stmt->execute([$category_id, $user_id]);
     header("Location: categories.php");
@@ -54,7 +49,6 @@ if ($action == 'delete' && $category_id) {
 
 include '../includes/header.php';
 
-// Display form for adding or editing
 if ($action == 'add' || $action == 'edit') :
     $current_category = null;
     if ($action == 'edit' && $category_id) {
@@ -62,7 +56,6 @@ if ($action == 'add' || $action == 'edit') :
         $stmt->execute([$category_id, $user_id]);
         $current_category = $stmt->fetch();
         if (!$current_category) {
-            // Category not found or doesn't belong to the user
             die('Error: Category not found.');
         }
     }
@@ -91,7 +84,7 @@ if ($action == 'add' || $action == 'edit') :
         </div>
     </div>
 
-<?php else : // Default list view ?>
+<?php else : ?>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="dashboard-title">Manage Categories</h1>
@@ -117,7 +110,6 @@ if ($action == 'add' || $action == 'edit') :
                 </thead>
                 <tbody>
                     <?php
-                    // Fetch all categories for the current user
                     $stmt = $pdo->prepare("SELECT id, name, type FROM categories WHERE user_id = ? ORDER BY type, name");
                     $stmt->execute([$user_id]);
                     $categories = $stmt->fetchAll();

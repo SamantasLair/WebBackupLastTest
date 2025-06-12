@@ -5,15 +5,10 @@ require '../config/database.php';
 $page_title = 'Reports';
 $user_id = $_SESSION['user_id'];
 
-// --- Data Fetching ---
-
-// 1. Determine the filtering period (month and year)
-// Default to the current month if not specified
 $selected_month = $_GET['month'] ?? date('Y-m');
 $year = date('Y', strtotime($selected_month));
 $month_name = date('F', strtotime($selected_month));
 
-// 2. Fetch all transactions for the selected month to calculate summaries and populate the table
 $sql_transactions = "
     SELECT t.transaction_date, t.type, t.amount, t.description, c.name as category_name, a.name as account_name
     FROM transactions t
@@ -26,7 +21,6 @@ $stmt_transactions = $pdo->prepare($sql_transactions);
 $stmt_transactions->execute([$user_id, $selected_month]);
 $transactions = $stmt_transactions->fetchAll();
 
-// 3. Calculate summary metrics from the fetched transactions
 $total_income = 0;
 $total_expense = 0;
 foreach ($transactions as $tx) {
@@ -37,7 +31,6 @@ foreach ($transactions as $tx) {
     }
 }
 
-// 4. Fetch data for the expense chart (expenses grouped by category)
 $sql_chart = "
     SELECT c.name as category_name, SUM(t.amount) as total_amount
     FROM transactions t
@@ -50,7 +43,6 @@ $stmt_chart = $pdo->prepare($sql_chart);
 $stmt_chart->execute([$user_id, $selected_month]);
 $chart_data = $stmt_chart->fetchAll();
 
-// 5. Prepare chart data for JavaScript
 $chart_labels = [];
 $chart_values = [];
 foreach ($chart_data as $data) {

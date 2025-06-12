@@ -7,14 +7,11 @@ $user_id = $_SESSION['user_id'];
 $action = $_GET['action'] ?? 'list';
 $transaction_id = $_GET['id'] ?? null;
 
-// Check if user has at least one account BEFORE handling any actions
 $stmt_acc_check = $pdo->prepare("SELECT id FROM accounts WHERE user_id = ? LIMIT 1");
 $stmt_acc_check->execute([$user_id]);
 $user_has_account = $stmt_acc_check->fetch();
 
-// Handle POST requests for adding/editing
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $user_has_account) {
-    // Sanitize the amount input by removing dots
     $amount = str_replace('.', '', $_POST['amount']);
 
     $type = $_POST['type'];
@@ -34,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $user_has_account) {
     exit();
 }
 
-// Handle delete request
 if ($action == 'delete' && $transaction_id) {
     $stmt = $pdo->prepare("DELETE FROM transactions WHERE id = ? AND user_id = ?");
     $stmt->execute([$transaction_id, $user_id]);
@@ -44,17 +40,14 @@ if ($action == 'delete' && $transaction_id) {
 
 include '../includes/header.php';
 
-// If in add/edit mode, check for accounts first.
 if ($action == 'add' || $action == 'edit') {
     if (!$user_has_account) {
         echo '<div class="alert alert-warning"><strong>Action Required:</strong> You must have at least one account to manage transactions. Please <a href="accounts.php?action=add" class="alert-link">add an account</a> first.</div>';
     } else {
-        // Fetch categories
         $stmt_cat = $pdo->prepare("SELECT id, name, type FROM categories WHERE user_id = ? OR user_id = 1 ORDER BY name");
         $stmt_cat->execute([$user_id]);
         $all_categories = $stmt_cat->fetchAll();
         
-        // Fetch user's accounts
         $stmt_accounts = $pdo->prepare("SELECT id, name FROM accounts WHERE user_id = ? ORDER BY name");
         $stmt_accounts->execute([$user_id]);
         $user_accounts = $stmt_accounts->fetchAll();
@@ -117,7 +110,7 @@ if ($action == 'add' || $action == 'edit') {
 } else { 
 ?>
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1>Transactions</h1>
+        <h1 class="dashboard-title">Transactions</h1>
         <a href="transactions.php?action=add" class="btn btn-primary">Add New</a>
     </div>
 

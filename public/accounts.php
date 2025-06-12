@@ -5,13 +5,11 @@ require '../config/database.php';
 $page_title = 'Accounts';
 $user_id = $_SESSION['user_id'];
 
-// Default action is to list accounts
 $action = $_GET['action'] ?? 'list';
 $account_id = $_GET['id'] ?? null;
 $error = '';
 $success = '';
 
-// Handle POST requests for adding/editing accounts
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name']);
     $initial_balance = $_POST['initial_balance'] ?? 0;
@@ -31,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Handle delete requests
 if ($action == 'delete' && $account_id) {
     try {
         $stmt = $pdo->prepare("DELETE FROM accounts WHERE id = ? AND user_id = ?");
@@ -45,7 +42,6 @@ if ($action == 'delete' && $account_id) {
 
 include '../includes/header.php';
 
-// Display form for adding or editing
 if ($action == 'add' || $action == 'edit') :
     $current_account = null;
     if ($action == 'edit' && $account_id) {
@@ -77,7 +73,7 @@ if ($action == 'add' || $action == 'edit') :
         </div>
     </div>
 
-<?php else : // Default list view ?>
+<?php else : ?>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="dashboard-title">Manage Accounts</h1>
